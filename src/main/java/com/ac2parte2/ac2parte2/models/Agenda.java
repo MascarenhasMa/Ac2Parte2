@@ -5,6 +5,9 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Data
 @Entity
 public class Agenda {
@@ -16,6 +19,7 @@ public class Agenda {
     private Curso curso;
     
     @ManyToOne
+    @JsonIgnoreProperties("agendas")
     private Professor professor;
     
     private LocalDate dataInicio;

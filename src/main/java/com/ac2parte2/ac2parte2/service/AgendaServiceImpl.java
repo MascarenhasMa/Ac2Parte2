@@ -43,6 +43,12 @@ public Agenda save(Agenda agenda) {
     Professor professor = professorRepository.findById(agenda.getProfessor().getId())
         .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
+    // Verifica a disponibilidade do professor para o novo horário
+    if (!isProfessorAvailable(professor.getId(), agenda.getDataInicio(), 
+            agenda.getHorarioInicio(), agenda.getHorarioFim())) {
+                throw new RuntimeException("Conflito de horário: o professor já possui uma agenda neste período.");
+    }
+
     // Associa o Curso e o Professor à Agenda
     agenda.setCurso(curso);
     agenda.setProfessor(professor);
@@ -52,17 +58,22 @@ public Agenda save(Agenda agenda) {
 }
 
 
+ 
+
+
+
     @Override
     public void deleteById(Long id) {
         agendaRepository.deleteById(id); // Deleta a agenda por id
     }
 
     @Override
-    public boolean isProfessorAvailable(Long professorId, LocalDate dataInicio, LocalDate dataFim, 
-                                        LocalTime horarioInicio, LocalTime horarioFim) {
-        // Verifica se o professor já possui agendas dentro do período e horário fornecido
-        List<Agenda> agendas = agendaRepository.findByProfessorIdAndDataInicioBetweenAndHorarioInicioBetween(
-                professorId, dataInicio, dataFim, horarioInicio, horarioFim);
-        return agendas.isEmpty(); // Se não houver agendas conflitantes, o professor está disponível
-    }
+public boolean isProfessorAvailable(Long professorId, LocalDate dataInicio, 
+                                    LocalTime horarioInicio, LocalTime horarioFim) {
+    // Verifica se o professor já possui agendas que conflitam com o horário fornecido
+    List<Agenda> agendas = agendaRepository.findConflictingAgendas(
+            professorId, dataInicio, horarioInicio, horarioFim);
+    return agendas.isEmpty(); // Se a lista está vazia, não há conflitos
+}
+
 }

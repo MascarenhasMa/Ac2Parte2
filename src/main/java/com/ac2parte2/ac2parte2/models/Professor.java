@@ -3,6 +3,8 @@ package com.ac2parte2.ac2parte2.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -35,6 +37,7 @@ public class Professor {
 
     // Relacionamento um para muitos com Agenda
     @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    
     private List<Agenda> agendas = new ArrayList<>(); // Inicializando a lista de agendas
 
     // Construtor sem cursos (caso o professor não tenha cursos inicialmente)

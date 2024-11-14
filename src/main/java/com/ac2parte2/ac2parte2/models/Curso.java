@@ -8,6 +8,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -25,6 +28,7 @@ public class Curso {
 
     // Relacionamento muitos para muitos com Professores
     @ManyToMany(mappedBy = "cursos")
+    @JsonIgnore
     private List<Professor> professores = new ArrayList<>();
 
     public Curso(String nome, Integer cargaHoraria, String descricao, String ementa, Professor professor) {
